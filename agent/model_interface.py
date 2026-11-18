@@ -57,7 +57,20 @@ class ModelInterface:
 
             result = response.json()
 
-            return result["choices"][0]["message"]["content"]
+            print("\n--- RAW API RESPONSE ---")
+            print(result)
+
+            message = result["choices"][0]["message"]
+
+            content = message.get("content", "")
+
+            if not content:
+                raise RuntimeError(
+                    "Model returned no final answer. "
+                    "Check reasoning output and token limit."
+                )
+
+            return content
 
         except requests.exceptions.ConnectionError:
             raise RuntimeError(
